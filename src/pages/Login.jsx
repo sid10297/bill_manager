@@ -6,9 +6,10 @@ import { useAPI } from "../hooks/useAPI";
 import Snackbar from "../components/Snackbar";
 
 const Login = () => {
-  const [user, setUser] = useState({ userName: "", password: "" });
   const navigate = useNavigate();
-  const { handleSnackbarClose, openSnackbar, setOpenSnackbar } = useSnackbar();
+  const [user, setUser] = useState({ userName: "", password: "" });
+  const { isSnackbarVisible, showSnackbar, closeSnackbar } = useSnackbar();
+
   const {
     error: authError,
     isSuccess,
@@ -21,9 +22,9 @@ const Login = () => {
 
   useEffect(() => {
     if (authError) {
-      setOpenSnackbar(true);
+      showSnackbar(true);
     }
-  }, [authError, setOpenSnackbar]);
+  }, [authError, showSnackbar]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -35,7 +36,7 @@ const Login = () => {
 
   const onLogin = async () => {
     if (user.userName === "" || user.password === "") {
-      setOpenSnackbar(true);
+      showSnackbar(true);
       return;
     }
 
@@ -103,10 +104,10 @@ const Login = () => {
       </Paper>
 
       <Snackbar
-        message={authError?.response.data}
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        onClose={handleSnackbarClose}
+        message={authError}
+        open={isSnackbarVisible}
+        setOpen={showSnackbar}
+        onClose={closeSnackbar}
       />
     </div>
   );

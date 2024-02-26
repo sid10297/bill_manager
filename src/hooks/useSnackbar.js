@@ -1,16 +1,16 @@
 import { useState } from "react";
 
 function useSnackbar() {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isSnackbarVisible, showSnackbar] = useState(false);
 
-  const handleSnackbarClose = (event, reason) => {
+  const closeSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpenSnackbar(false);
+    showSnackbar(false);
   };
 
-  return { openSnackbar, setOpenSnackbar, handleSnackbarClose };
+  return { isSnackbarVisible, showSnackbar, closeSnackbar };
 }
 
 export default useSnackbar;

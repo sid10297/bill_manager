@@ -21,23 +21,15 @@ import { style } from "./BillInfoStyle";
 import { DynamicTable } from "./DynamicTable";
 
 export function BillInfoModal({ onClose, billData, onSubmit }) {
+  const [billItems, setBillItems] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [rows, setRows] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const {
-    // isLoading: customersLoading,
-    // error: customersError,
-    data: customers,
-  } = useAPI({
+  const { data: customers } = useAPI({
     path: "CustomerManagement/Customer/GetLookupList",
   });
 
-  const {
-    // isLoading: billNumLoading,
-    // error: billNumError,
-    data: billNum,
-  } = useAPI({
+  const { data: billNum } = useAPI({
     path: "BillManagement/Bill/GenerateBillNo",
   });
 
@@ -47,7 +39,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
         `BillManagement/Bill/GetModel/${billData?.id}`
       );
 
-      setRows(res.data.billItems);
+      setBillItems(res.data.billItems);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +57,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
 
   const getTotalAmount = () => {
     let total = 0;
-    for (let item of rows) {
+    for (let item of billItems) {
       total += item.rate * item.qty;
     }
     return total;
@@ -73,7 +65,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
 
   const getTotalDiscount = () => {
     let total = 0;
-    for (let item of rows) {
+    for (let item of billItems) {
       total += item.discAmt;
     }
     return total;
@@ -83,21 +75,14 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
     const totalAmount = getTotalAmount();
     const totalDiscount = getTotalDiscount();
     const formattedDate = formatDate(selectedDate);
-    const billItems = [];
-    setRows((prevRows) => {
-      return prevRows.map((row) => {
-        const newRow = { ...row, amount: row.rate * row.qty };
-        billItems.push({
-          descr: newRow.descr,
-          unit: newRow.unit,
-          qty: newRow.qty,
-          rate: newRow.rate,
-          discAmt: newRow.discAmt,
-          amount: newRow.amount,
-        });
-        return newRow;
-      });
-    });
+
+    const billItemsWithAmount = billItems.map((row) => ({
+      ...row,
+      amount: row.rate * row.qty,
+    }));
+
+    setBillItems(billItemsWithAmount);
+
     const payload = {
       billNo: billData?.billNo ? billData.billNo : billNum,
       billDate: formattedDate,
@@ -107,7 +92,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
       netAmount: totalAmount - totalDiscount,
       totalDiscountAmount: totalDiscount,
       Remarks: null,
-      billItems,
+      billItems: billItemsWithAmount,
     };
 
     if (billData?.id) {
@@ -126,16 +111,18 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Grid container gap={1}>
-          <Grid item xs={5}>
-            <InputLabel>Bill Number</InputLabel>
-            <TextField
-              disabled
-              value={billData?.billNo ? billData.billNo : billNum}
-            />
-          </Grid>
-          <Grid item xs={5} display="flex" alignItems="flex-end">
-            <div>
+        <Grid container gap={2}>
+          <Grid
+            item
+            py={2}
+            display="flex"
+            justifyContent="space-between"
+            xs={12}
+          >
+            <InputLabel>{`Bill Number: #${
+              billData?.billNo ? billData.billNo : billNum
+            }`}</InputLabel>
+            <Grid item ml={2}>
               <InputLabel>Bill Date</InputLabel>
               <ReactDatePicker
                 selected={selectedDate}
@@ -143,29 +130,29 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
                 placeholderText="Bill Date"
                 className="date-picker"
               />
-            </div>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Autocomplete
-              disablePortal
-              id="customer-list"
-              defaultValue={
-                billData?.customerID && {
-                  customerID: billData.customerID,
-                  customerName: billData.customerName,
-                }
+
+          <Autocomplete
+            disablePortal
+            id="customer-list"
+            defaultValue={
+              billData?.customerID && {
+                customerID: billData.customerID,
+                customerName: billData.customerName,
               }
-              options={customers || []}
-              sx={{ width: 300 }}
-              onChange={handleAutocompleteChange}
-              getOptionLabel={(option) => option.customerName}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Customer" />
-              )}
-            />
-          </Grid>
+            }
+            options={customers || []}
+            sx={{ width: 300 }}
+            onChange={handleAutocompleteChange}
+            getOptionLabel={(option) => option.customerName}
+            renderInput={(params) => (
+              <TextField {...params} label="Select Customer" />
+            )}
+          />
+
           <Grid item xs={12}>
-            <DynamicTable rows={rows} setRows={setRows} />
+            <DynamicTable rows={billItems} setRows={setBillItems} />
           </Grid>
           <Grid container>
             <Grid item xs={6}>

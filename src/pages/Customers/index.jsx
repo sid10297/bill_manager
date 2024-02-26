@@ -1,24 +1,26 @@
-import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { useEffect, useState } from "react";
+import {
+  Button,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-import { useAPI } from "../../hooks/useAPI";
-import { ListItem } from "./ListItem";
-import useSnackbar from "../../hooks/useSnackbar";
 import Snackbar from "../../components/Snackbar";
-import { CustomerInfoModal } from "./CustomerInfoModal";
+import useSnackbar from "../../hooks/useSnackbar";
 import { Loader } from "../../components/Loader";
+import { useAPI } from "../../hooks/useAPI";
+import { CustomerInfoModal } from "./CustomerInfoModal";
+import { ListItem } from "./ListItem";
 
 export default function Customers() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedCustomer, setCustomer] = useState(null);
-  const { openSnackbar, setOpenSnackbar, handleSnackbarClose } = useSnackbar();
+  const { isSnackbarVisible, showSnackbar, closeSnackbar } = useSnackbar();
 
   const {
     data: customersData,
@@ -47,14 +49,14 @@ export default function Customers() {
 
   useEffect(() => {
     if (customerAddError || customerRemoveError || customerUpdateError) {
-      setOpenSnackbar(true);
+      showSnackbar(true);
     }
   }, [
     customerAddError,
     customerRemoveError,
     customerUpdateError,
     refetchCustomersData,
-    setOpenSnackbar,
+    showSnackbar,
   ]);
 
   useEffect(() => {
@@ -76,6 +78,12 @@ export default function Customers() {
     id: customerData?.customerID,
     name: customerData?.customerName,
   }));
+
+  const error =
+    customersError ||
+    customerAddError ||
+    customerUpdateError ||
+    customerRemoveError;
 
   function handleOnEdit(customer) {
     setCustomer(customer);
@@ -120,7 +128,7 @@ export default function Customers() {
         </Button>
       </div>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
@@ -145,23 +153,17 @@ export default function Customers() {
 
       {openModal && (
         <CustomerInfoModal
-          onClose={handleOnCloseCustomerInfoModal}
           customerData={selectedCustomer}
           onSubmit={handleSubmit}
+          onClose={handleOnCloseCustomerInfoModal}
         />
       )}
 
       <Snackbar
-        message={
-          customerAddError
-            ? customerAddError?.response.data
-            : customerRemoveError
-            ? customerRemoveError?.response.data
-            : customerUpdateError?.response.data
-        }
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        onClose={handleSnackbarClose}
+        message={error}
+        open={isSnackbarVisible}
+        setOpen={showSnackbar}
+        onClose={closeSnackbar}
       />
     </>
   );

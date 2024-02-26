@@ -20,7 +20,7 @@ export default function Bills() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedBill, setBill] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { openSnackbar, setOpenSnackbar, handleSnackbarClose } = useSnackbar();
+  const { isSnackbarVisible, showSnackbar, closeSnackbar } = useSnackbar();
 
   const pdfRef = useRef();
   useReactToPrint();
@@ -52,14 +52,14 @@ export default function Bills() {
 
   useEffect(() => {
     if (billAddError || billRemoveError || billUpdateError) {
-      setOpenSnackbar(true);
+      showSnackbar(true);
     }
   }, [
     billAddError,
     billRemoveError,
     billUpdateError,
     refetchBillData,
-    setOpenSnackbar,
+    showSnackbar,
   ]);
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export default function Bills() {
   }
 
   async function handleRemove(id) {
-    removeBillData(null, null, `${id}`);
+    removeBillData(null, null, `BillManagement/Bill/Delete/${id}`);
     refetchBillData();
   }
 
@@ -178,9 +178,9 @@ export default function Bills() {
               ? billRemoveError?.response.data
               : billUpdateError?.response.data
           }
-          open={openSnackbar}
-          setOpen={setOpenSnackbar}
-          onClose={handleSnackbarClose}
+          open={isSnackbarVisible}
+          setOpen={showSnackbar}
+          onClose={closeSnackbar}
         />
       </>
     );
