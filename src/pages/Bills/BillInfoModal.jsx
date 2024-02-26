@@ -54,7 +54,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
         setRemarkContent(billData.remarks);
       }
     }
-  }, [billData?.id, billData.remarks, fetchBills]);
+  }, [billData?.id, billData?.remarks, fetchBills]);
 
   const handleAutocompleteChange = (event, value) => {
     setSelectedCustomer(value);
@@ -117,15 +117,18 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
       <Box sx={style}>
         <Grid container gap={2}>
           <Grid
-            item
+            container
             py={2}
             display="flex"
             justifyContent="space-between"
             xs={12}
           >
-            <InputLabel>{`Bill Number: #${
-              billData?.billNo ? billData.billNo : billNum
-            }`}</InputLabel>
+            <Grid item>
+              <InputLabel>{`Bill Number: #${
+                billData?.billNo ? billData.billNo : billNum
+              }`}</InputLabel>
+            </Grid>
+
             <Grid item ml={2}>
               <InputLabel>Bill Date</InputLabel>
               <ReactDatePicker
@@ -159,30 +162,34 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
             <BillingTable rows={billItems} setRows={setBillItems} />
           </Grid>
           <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={12} lg={6}>
               <InputLabel>Remarks</InputLabel>
               <Editor content={remarkContent} setContent={setRemarkContent} />
             </Grid>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: "1",
-                alignItems: "end",
-              }}
-            >
-              <Box>
-                <Typography>Total Amount: &#8377;{getTotalAmount()}</Typography>
+            <Grid item xs={12} lg={6}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flexGrow: "1",
+                  alignItems: "end",
+                }}
+              >
+                <Box>
+                  <Typography>
+                    Total Amount: &#8377;{getTotalAmount()}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography>Discount: &#8377;{getTotalDiscount()}</Typography>
+                </Box>
+                <Box>
+                  <Typography>
+                    Net Amount: &#8377;{getTotalAmount() - getTotalDiscount()}
+                  </Typography>
+                </Box>
               </Box>
-              <Box>
-                <Typography>Discount: &#8377;{getTotalDiscount()}</Typography>
-              </Box>
-              <Box>
-                <Typography>
-                  Net Amount: &#8377;{getTotalAmount() - getTotalDiscount()}
-                </Typography>
-              </Box>
-            </Box>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
             <Box display="flex" justifyContent="flex-end">
