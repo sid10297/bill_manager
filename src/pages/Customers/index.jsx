@@ -95,7 +95,7 @@ export default function Customers() {
   }
 
   async function handleRemove(id) {
-    removeCustomerData(null, null, `${id}`);
+    removeCustomerData(null, null, `CustomerManagement/Customer/Delete/${id}`);
     refetchCustomersData();
   }
 
