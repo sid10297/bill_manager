@@ -9,7 +9,7 @@ import { makeColumns } from "./makeColumns";
 import { EditToolbar } from "./EditToolbar";
 import { useState } from "react";
 
-export function DynamicTable({ setRows, rows }) {
+export function BillingTable({ setRows, rows }) {
   const [rowModesModel, setRowModesModel] = useState({});
 
   const handleRowEditStop = (params, event) => {

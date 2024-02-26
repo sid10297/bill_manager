@@ -18,7 +18,7 @@ import { useAPI } from "../../hooks/useAPI";
 import { formatDate } from "../../utils";
 import axiosInstance from "../../apis";
 import { style } from "./BillInfoStyle";
-import { DynamicTable } from "./DynamicTable";
+import { BillingTable } from "./BillingTable";
 
 export function BillInfoModal({ onClose, billData, onSubmit }) {
   const [billItems, setBillItems] = useState([]);
@@ -152,7 +152,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
           />
 
           <Grid item xs={12}>
-            <DynamicTable rows={billItems} setRows={setBillItems} />
+            <BillingTable rows={billItems} setRows={setBillItems} />
           </Grid>
           <Grid container>
             <Grid item xs={6}>
@@ -168,14 +168,14 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
               }}
             >
               <Box>
-                <Typography>Total Amount: {getTotalAmount()}</Typography>
+                <Typography>Total Amount: &#8377;{getTotalAmount()}</Typography>
               </Box>
               <Box>
-                <Typography>Discount: {getTotalDiscount()}</Typography>
+                <Typography>Discount: &#8377;{getTotalDiscount()}</Typography>
               </Box>
               <Box>
                 <Typography>
-                  Net Amount: {getTotalAmount() - getTotalDiscount()}
+                  Net Amount: &#8377;{getTotalAmount() - getTotalDiscount()}
                 </Typography>
               </Box>
             </Box>
