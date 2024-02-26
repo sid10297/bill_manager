@@ -1,3 +1,5 @@
+import HTMLReactParser from "html-react-parser";
+
 export function formatDate(inputDateString) {
   const inputDate = new Date(inputDateString);
 
@@ -8,4 +10,8 @@ export function formatDate(inputDateString) {
     .replace(/-/g, "-");
 
   return formattedDate;
+}
+
+export function parseHtml(htmlContent) {
+  return HTMLReactParser(htmlContent);
 }

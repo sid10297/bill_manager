@@ -19,11 +19,13 @@ import { formatDate } from "../../utils";
 import axiosInstance from "../../apis";
 import { style } from "./BillInfoStyle";
 import { BillingTable } from "./BillingTable";
+import { Editor } from "../../components/Editor";
 
 export function BillInfoModal({ onClose, billData, onSubmit }) {
   const [billItems, setBillItems] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [remarkContent, setRemarkContent] = useState("");
 
   const { data: customers } = useAPI({
     path: "CustomerManagement/Customer/GetLookupList",
@@ -48,8 +50,11 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
   useEffect(() => {
     if (billData?.id) {
       fetchBills();
+      if (billData?.remarks) {
+        setRemarkContent(billData.remarks);
+      }
     }
-  }, [billData?.id, fetchBills]);
+  }, [billData?.id, billData.remarks, fetchBills]);
 
   const handleAutocompleteChange = (event, value) => {
     setSelectedCustomer(value);
@@ -90,7 +95,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
       customerID: _customerID,
       netAmount: totalAmount - totalDiscount,
       totalDiscountAmount: totalDiscount,
-      Remarks: null,
+      Remarks: remarkContent,
       billItems: billItemsWithAmount,
     };
 
@@ -156,7 +161,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
           <Grid container>
             <Grid item xs={6}>
               <InputLabel>Remarks</InputLabel>
-              {/* <Editor /> */}
+              <Editor content={remarkContent} setContent={setRemarkContent} />
             </Grid>
             <Box
               sx={{

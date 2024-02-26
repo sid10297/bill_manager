@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, TableCell, TableRow } from "@mui/material";
 import PropTypes from "prop-types";
+import { parseHtml } from "../../utils";
 
 export const ListItem = ({ data, srNo, onEdit, onRemove }) => {
   const { id, billNo, date, customerName, netAmount, remarks } = data;
@@ -14,7 +15,7 @@ export const ListItem = ({ data, srNo, onEdit, onRemove }) => {
       <TableCell align="right">{date?.substring(0, 10)}</TableCell>
       <TableCell align="right">{customerName}</TableCell>
       <TableCell align="right">{netAmount}</TableCell>
-      <TableCell align="right">{remarks}</TableCell>
+      <TableCell align="right">{parseHtml(remarks)}</TableCell>
 
       <TableCell align="right">
         <ButtonGroup>
