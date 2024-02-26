@@ -75,6 +75,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
     const totalAmount = getTotalAmount();
     const totalDiscount = getTotalDiscount();
     const formattedDate = formatDate(selectedDate);
+    const _customerID = selectedCustomer?.customerID || billData?.customerID;
 
     const billItemsWithAmount = billItems.map((row) => ({
       ...row,
@@ -86,9 +87,7 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
     const payload = {
       billNo: billData?.billNo ? billData.billNo : billNum,
       billDate: formattedDate,
-      customerID: selectedCustomer?.customerID
-        ? selectedCustomer?.customerID
-        : billData?.customerID,
+      customerID: _customerID,
       netAmount: totalAmount - totalDiscount,
       totalDiscountAmount: totalDiscount,
       Remarks: null,
@@ -182,7 +181,14 @@ export function BillInfoModal({ onClose, billData, onSubmit }) {
           </Grid>
           <Grid item xs={12}>
             <Box display="flex" justifyContent="flex-end">
-              <Button onClick={handleSubmit} variant="contained">
+              <Button
+                disabled={
+                  !(selectedCustomer?.customerID || billData?.customerID) ||
+                  billItems.length <= 0
+                }
+                onClick={handleSubmit}
+                variant="contained"
+              >
                 Save
               </Button>
             </Box>
