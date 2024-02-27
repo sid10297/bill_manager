@@ -28,5 +28,4 @@ Welcome to the Bill Manager project! This application helps you manage customers
 ## Improvements
 
 - Snackbar errors issue can easily be fixed by react-query.
-- Use form validation libraries like yup along with react-form-hook.
-
+- Use form validation libraries like yup, along with react-hook-form.
