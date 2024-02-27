@@ -78,6 +78,8 @@ export default function Bills() {
     return <p>{billError}</p>;
   }
 
+  const error = billAddError || billError || billRemoveError || billUpdateError;
+
   const bills = billData?.map((billData) => ({
     id: billData?.billID,
     billNo: billData?.billNo,
@@ -171,13 +173,7 @@ export default function Bills() {
         )}
 
         <Snackbar
-          message={
-            billAddError
-              ? billAddError?.response.data
-              : billRemoveError
-              ? billRemoveError?.response.data
-              : billUpdateError?.response.data
-          }
+          message={error}
           open={isSnackbarVisible}
           setOpen={showSnackbar}
           onClose={closeSnackbar}
