@@ -23,10 +23,10 @@ Welcome to the Bill Manager project! This application helps you manage customers
 4. View all the bills in the Bills page.
 
 ## Known Bugs
+- The Snackbar, in certain scenarios, shows the previous error message. It is because errors are not handled properly by useAPI Hook.
 
-- The Snackbar, in certain scenarios, shows the previous error message.
+## Improvements
 
-## Potential Improvements
+- Snackbar errors issue can easily be fixed by react-query.
+- Use form validation libraries like yup along with react-form-hook.
 
-- Add a search feature to quickly find specific bills and implement pagination.
-- Provide data visualization for better insights into bill trends.
