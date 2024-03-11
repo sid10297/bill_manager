@@ -24,8 +24,8 @@ import { Editor } from "../../components/Editor";
 export function BillInfoModal({ onClose, billData, onSubmit }) {
   const [billItems, setBillItems] = useState([]);
    const [selectedDate, setSelectedDate] = useState(
-  +    billData?.date ? new Date(billData.date) : new Date()
-  +);  
+      billData?.date ? new Date(billData.date) : new Date()
+  );  
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [remarkContent, setRemarkContent] = useState("");
 
